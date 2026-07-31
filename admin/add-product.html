@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Add Product | FlexStore</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="../css/style.css">
+
+</head>
+
+<body>
+
+<div class="container py-5">
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<h2 class="mb-4">
+
+Add Product
+
+</h2>
+
+<form id="productForm">
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Product Name
+
+</label>
+
+<input
+type="text"
+id="name"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Description
+
+</label>
+
+<textarea
+id="description"
+rows="4"
+class="form-control"
+required></textarea>
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Brand
+
+</label>
+
+<input
+type="text"
+id="brand"
+class="form-control"
+placeholder="Example: Samsung, Apple, Nike"
+required>
+
+</div>
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Category
+
+</label>
+
+<select
+id="category"
+class="form-select">
+
+<option value="Clothing">
+
+Clothing
+
+</option>
+
+<option value="Smartphone">
+
+Smartphone
+
+</option>
+
+</select>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Price
+
+</label>
+
+<div class="row">
+
+<div class="col-md-4 mb-3">
+
+<label>
+
+Price
+
+</label>
+
+<input
+type="number"
+id="price"
+step="0.01"
+class="form-control"
+required>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>
+
+Old Price
+
+</label>
+
+<input
+type="number"
+id="oldPrice"
+step="0.01"
+class="form-control"
+value="0">
+
+</div>
+
+</div>
+
+<div class="mb-3">
+
+<label>
+
+Stock Quantity
+
+</label>
+
+<input
+type="number"
+id="stock"
+class="form-control"
+value="1"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label>
+
+Product Image
+
+</label>
+
+<input
+type="file"
+id="image"
+accept="image/*"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3 text-center">
+
+<img
+id="preview"
+src=""
+style="max-width:250px;display:none;"
+class="img-fluid rounded border">
+
+</div>
+
+<div class="d-grid gap-2">
+
+<button
+type="submit"
+class="btn btn-success btn-lg">
+
+Save Product
+
+</button>
+
+<a
+href="products.html"
+class="btn btn-secondary">
+
+Cancel
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const form = document.getElementById("productForm");
+
+const imageInput = document.getElementById("image");
+
+const preview = document.getElementById("preview");
+
+let imageData = "";
+
+/* ===========================
+   IMAGE PREVIEW
+=========================== */
+
+imageInput.addEventListener("change", function(){
+
+const file = this.files[0];
+
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(e){
+
+imageData = e.target.result;
+
+preview.src = imageData;
+
+preview.style.display = "block";
+
+};
+
+reader.readAsDataURL(file);
+
+});
+
+/* ===========================
+   SAVE PRODUCT
+=========================== */
+
+form.addEventListener("submit", function(e){
+
+e.preventDefault();
+
+if(imageData === ""){
+
+    alert("Please choose a product image.");
+
+    return;
+
+}
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+const newProduct = {
+
+id: Date.now(),
+
+name: document.getElementById("name").value,
+
+description: document.getElementById("description").value,
+
+brand: document.getElementById("brand").value,
+
+category: document.getElementById("category").value,
+
+price: parseFloat(document.getElementById("price").value),
+
+oldPrice: parseFloat(document.getElementById("oldPrice").value) || 0,
+
+stock: parseInt(document.getElementById("stock").value),
+
+rating: 5,
+
+reviews: 0,
+
+featured: true,
+
+image: imageData
+
+};
+
+products.push(newProduct);
+
+localStorage.setItem("products", JSON.stringify(products));
+
+alert("✅ Product added successfully!");
+
+window.location = "products.html";
+
+});
+
+</script>
+
+</body>
+
+</html>

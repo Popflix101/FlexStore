@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact Us | FlexStore</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<div class="container">
+
+<a class="navbar-brand" href="index.html">
+FlexStore
+</a>
+
+<div>
+
+<a href="shop.html" class="btn btn-outline-light btn-sm">
+Shop
+</a>
+
+</div>
+
+</div>
+
+</nav>
+
+<div class="container py-5">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<h2>Contact Us</h2>
+
+<p>If you have any questions, feel free to contact us.</p>
+
+<hr>
+
+<p><strong>Phone:</strong> +27 12 345 6789</p>
+
+<p><strong>Email:</strong> support@flexstore.co.za</p>
+
+<p><strong>Address:</strong> Johannesburg, South Africa</p>
+
+</div>
+
+<div class="col-md-6">
+
+<div class="card">
+
+<div class="card-body">
+
+<h4>Send a Message</h4>
+
+<form id="contactForm">
+
+<div class="mb-3">
+
+<label>Name</label>
+
+<input
+type="text"
+id="name"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label>Email</label>
+
+<input
+type="email"
+id="email"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label>Message</label>
+
+<textarea
+id="message"
+rows="5"
+class="form-control"
+required></textarea>
+
+</div>
+
+<button
+class="btn btn-primary">
+
+Send Message
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+document.getElementById("contactForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let messages = JSON.parse(localStorage.getItem("messages")) || [];
+
+messages.push({
+
+id: Date.now(),
+
+name: name.value,
+
+email: email.value,
+
+message: message.value,
+
+date: new Date().toLocaleString()
+
+});
+
+localStorage.setItem("messages", JSON.stringify(messages));
+
+alert("Thank you! Your message has been sent.");
+
+contactForm.reset();
+
+});
+
+</script>
+
+</body>
+
+</html>
