@@ -82,6 +82,20 @@ const defaultProducts = [
     reviews: 102,
     image: "images/products/xiaomi15.jpg",
     description: "Flagship Xiaomi."
+  },
+  {
+    id:7,
+    name: "Flex16 Black Outfit",
+    category: "Clothing",
+    brand: "Flex16",
+    price: 1599.99,
+    oldPrice: 1899.99,
+    stock: 5,
+    featured: true,
+    rating: 4.7,
+    reviews: 102,
+    image: "images/products/Flex Black outfit.jpg",
+    description: "Flagship Xiaomi."
   }
 ];
 

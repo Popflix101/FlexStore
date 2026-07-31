@@ -279,7 +279,7 @@ reader.readAsDataURL(file);
    SAVE PRODUCT
 =========================== */
 
-form.addEventListener("submit", function(e){
+form.addEventListener("submit", async function(e){
 
 e.preventDefault();
 
@@ -288,6 +288,40 @@ if(imageData === ""){
     alert("Please choose a product image.");
 
     return;
+
+}
+
+let uploadResponse;
+
+try {
+
+   const uploadUrl = window.location.protocol === "file:"
+      ? "http://127.0.0.1:3000/api/upload-product"
+      : "/api/upload-product";
+
+   uploadResponse = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ imageData: imageData })
+   });
+
+} catch (error) {
+
+   alert("Unable to upload the product image.");
+
+   return;
+
+}
+
+const uploadResult = await uploadResponse.json();
+
+if (!uploadResponse.ok) {
+
+   alert(uploadResult.error || "Unable to upload the product image.");
+
+   return;
 
 }
 
@@ -317,7 +351,7 @@ reviews: 0,
 
 featured: true,
 
-image: imageData
+image: uploadResult.image
 
 };
 
