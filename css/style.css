@@ -1,3 +1,15 @@
+.btn-black {
+    background-color: #000;
+    border-color: #000;
+    color: #fff;
+}
+
+.btn-black:hover,
+.btn-black:focus {
+    background-color: #222;
+    border-color: #222;
+    color: #fff;
+}
 /* ===============================
    GOOGLE FONT
 ================================= */
