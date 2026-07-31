@@ -126,7 +126,10 @@ window.viewProduct = viewProduct;
 window.productsExecuted = true;
 
 // Save products
-function saveProducts(){
+function saveProducts(updatedProducts = products){
+
+    products = Array.isArray(updatedProducts) ? updatedProducts : [];
+    window.products = products;
 
     localStorage.setItem(
         "products",
