@@ -101,17 +101,18 @@
 
 </div>
 
+<script src="admin/auth.js"></script>
 <script>
 
 document.getElementById("loginForm").addEventListener("submit", function(e){
 
     e.preventDefault();
 
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("email").value.trim().toLowerCase();
 
     const password = document.getElementById("password").value;
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
     const user = users.find(u =>
         u.email === email &&
@@ -127,7 +128,11 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
 
         alert("Login successful!");
 
-        window.location = "index.html";
+        if (user.role === "admin" || user.email === "admin@flexstore.com") {
+            window.location = "admin/dashboard.html";
+        } else {
+            window.location = "index.html";
+        }
 
     }else{
 

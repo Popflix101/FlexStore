@@ -74,7 +74,11 @@ placeholder="Search by order number, customer or email...">
 
 </div>
 
+<script src="auth.js"></script>
 <script>
+if (!window.FlexStoreAuth.ensureAdminAccess()) {
+    throw new Error("Access denied");
+}
 
 let orders = JSON.parse(localStorage.getItem("orders")) || [];
 

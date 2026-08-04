@@ -92,7 +92,11 @@ placeholder="Search customer...">
 
 </div>
 
+<script src="auth.js"></script>
 <script>
+if (!window.FlexStoreAuth.ensureAdminAccess()) {
+    throw new Error("Access denied");
+}
 
 let users =
 JSON.parse(localStorage.getItem("users")) || [];

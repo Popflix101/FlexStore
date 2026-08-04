@@ -5,7 +5,8 @@ const { URL } = require("url");
 
 const root = __dirname;
 const productsDirectory = path.join(root, "images", "products");
-const port = 3000;
+const port = process.env.PORT || 3000;
+const host = process.env.HOST || "0.0.0.0";
 
 const mimeTypes = {
     ".html": "text/html; charset=utf-8",
@@ -116,6 +117,6 @@ const server = http.createServer(async (request, response) => {
     });
 });
 
-server.listen(port, "127.0.0.1", () => {
-    console.log(`FlexStore served at http://127.0.0.1:${port}`);
+server.listen(port, host, () => {
+    console.log(`FlexStore served at http://${host}:${port}`);
 });

@@ -403,7 +403,11 @@ Manage Orders
 
 </div>
 
+<script src="auth.js"></script>
 <script>
+if (!window.FlexStoreAuth.ensureAdminAccess()) {
+    throw new Error("Access denied");
+}
 
 const products =
 JSON.parse(localStorage.getItem("products")) || [];

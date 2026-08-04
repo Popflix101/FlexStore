@@ -1,0 +1,12 @@
+{
+  "name": "flexstore",
+  "version": "1.0.0",
+  "description": "FlexStore static e-commerce site served with Node.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

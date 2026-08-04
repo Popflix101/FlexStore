@@ -185,7 +185,11 @@ Cancel
 
 </div>
 
+<script src="auth.js"></script>
 <script>
+if (!window.FlexStoreAuth.ensureAdminAccess()) {
+    throw new Error("Access denied");
+}
 
 let products =
 JSON.parse(localStorage.getItem("products")) || [];
@@ -202,29 +206,46 @@ alert("Product not found.");
 
 window.location="products.html";
 
-}
+} else {
+
+const nameInput = document.getElementById("name");
+const brandInput = document.getElementById("brand");
+const descriptionInput = document.getElementById("description");
+const categoryInput = document.getElementById("category");
+const priceInput = document.getElementById("price");
+const stockInput = document.getElementById("stock");
+const oldPriceInput = document.getElementById("oldPrice");
+const imageInput = document.getElementById("image");
+const previewImage = document.getElementById("preview");
+const editForm = document.getElementById("editForm");
 
 // Fill form
 
-name.value = product.name;
-brand.value = product.brand || "";
-description.value = product.description;
-category.value = product.category;
-price.value = product.price;
-stock.value = product.stock || 1;
-oldPrice.value = product.oldPrice || 0;
+nameInput.value = product.name || "";
+brandInput.value = product.brand || "";
+descriptionInput.value = product.description || "";
+categoryInput.value = product.category || "Clothing";
+priceInput.value = product.price || 0;
+stockInput.value = product.stock || 1;
+oldPriceInput.value = product.oldPrice || 0;
 
-preview.src = product.image;
+previewImage.src = product.image || "";
 
-let imageData = product.image;
+let imageData = product.image || "";
 
 // New image
 
-image.addEventListener("change",function(){
+imageInput.addEventListener("change",function(){
 
 const file=this.files[0];
 
-if(!file) return;
+if(!file){
+
+imageData = product.image || "";
+previewImage.src = imageData;
+return;
+
+}
 
 const reader=new FileReader();
 
@@ -232,7 +253,7 @@ reader.onload=function(e){
 
 imageData=e.target.result;
 
-preview.src=imageData;
+previewImage.src=imageData;
 
 };
 
@@ -246,19 +267,19 @@ editForm.addEventListener("submit",function(e){
 
 e.preventDefault();
 
-product.name = name.value;
+product.name = nameInput.value;
 
-product.brand = brand.value;
+product.brand = brandInput.value;
 
-product.description = description.value;
+product.description = descriptionInput.value;
 
-product.category=category.value;
+product.category=categoryInput.value;
 
-product.price=parseFloat(price.value);
+product.price=parseFloat(priceInput.value);
 
-product.stock=parseInt(stock.value);
+product.stock=parseInt(stockInput.value);
 
-product.oldPrice=parseFloat(oldPrice.value);
+product.oldPrice=parseFloat(oldPriceInput.value);
 
 product.image=imageData;
 
@@ -267,6 +288,12 @@ product.rating = product.rating || 5;
 product.reviews = product.reviews || 0;
 
 product.featured = product.featured ?? true;
+
+const index = products.findIndex(item => item.id === product.id);
+
+if(index !== -1){
+    products[index] = product;
+}
 
 localStorage.setItem(
 "products",
@@ -280,6 +307,8 @@ localStorage.removeItem("editProduct");
 window.location="products.html";
 
 });
+
+}
 
 </script>
 
