@@ -2,17 +2,34 @@
     const ADMIN_EMAIL = "admin@flexstore.com";
     const ADMIN_PASSWORD = "admin123";
     const ADMIN_ROLE = "admin";
+    const CUSTOMER_ROLE = "customer";
+
+    function normalizeUser(user) {
+        if (!user || typeof user !== "object") {
+            return null;
+        }
+
+        const normalizedUser = { ...user };
+
+        if (!normalizedUser.role) {
+            normalizedUser.role = normalizedUser.email === ADMIN_EMAIL ? ADMIN_ROLE : CUSTOMER_ROLE;
+        }
+
+        return normalizedUser;
+    }
 
     function getStoredUsers() {
         try {
-            return JSON.parse(localStorage.getItem("users")) || [];
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+            return (Array.isArray(users) ? users : []).map(normalizeUser).filter(Boolean);
         } catch (error) {
             return [];
         }
     }
 
     function saveUsers(users) {
-        localStorage.setItem("users", JSON.stringify(users));
+        const safeUsers = (Array.isArray(users) ? users : []).map(normalizeUser).filter(Boolean);
+        localStorage.setItem("users", JSON.stringify(safeUsers));
     }
 
     function ensureAdminAccount() {
@@ -44,19 +61,21 @@
     }
 
     function isAdminUser(user) {
-        return Boolean(user) && (user.role === ADMIN_ROLE || user.email === ADMIN_EMAIL);
+        const normalizedUser = normalizeUser(user);
+        return Boolean(normalizedUser) && (normalizedUser.role === ADMIN_ROLE || normalizedUser.email === ADMIN_EMAIL);
     }
 
     function getLoggedInUser() {
         try {
-            return JSON.parse(localStorage.getItem("loggedInUser"));
+            return normalizeUser(JSON.parse(localStorage.getItem("loggedInUser")));
         } catch (error) {
             return null;
         }
     }
 
     function setLoggedInUser(user) {
-        localStorage.setItem("loggedInUser", JSON.stringify(user));
+        const normalizedUser = normalizeUser(user);
+        localStorage.setItem("loggedInUser", JSON.stringify(normalizedUser));
     }
 
     function loginUser(user) {
@@ -84,12 +103,14 @@
     window.FlexStoreAuth = {
         ADMIN_EMAIL,
         ADMIN_PASSWORD,
+        CUSTOMER_ROLE,
         ensureAdminAccount,
         ensureAdminAccess,
         getLoggedInUser,
         getStoredUsers,
         isAdminUser,
         loginUser,
+        normalizeUser,
         saveUsers,
         setLoggedInUser
     };

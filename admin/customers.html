@@ -74,6 +74,8 @@ placeholder="Search customer...">
 
 <th>Phone</th>
 
+<th>Password</th>
+
 <th>Actions</th>
 
 </tr>
@@ -147,6 +149,31 @@ ${user.lastName}
 
 <td>
 
+<div class="d-flex align-items-center gap-2">
+
+<input
+id="password-${index}"
+class="form-control form-control-sm"
+type="password"
+value="${user.password || ""}"
+readonly>
+
+<button
+class="btn btn-outline-secondary btn-sm"
+type="button"
+onclick="togglePassword(${index})"
+aria-label="Show or hide password">
+
+<i id="eye-${index}" class="fa-solid fa-eye"></i>
+
+</button>
+
+</div>
+
+</td>
+
+<td>
+
 <button
 class="btn btn-danger btn-sm"
 onclick="deleteCustomer(${index})">
@@ -184,6 +211,19 @@ renderCustomers();
 }
 
 }
+
+window.togglePassword = function(index){
+
+const input = document.getElementById(`password-${index}`);
+const icon = document.getElementById(`eye-${index}`);
+
+if(!input || !icon){ return; }
+
+const isPassword = input.type === "password";
+input.type = isPassword ? "text" : "password";
+icon.className = isPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+
+};
 
 document
 .getElementById("search")

@@ -89,6 +89,24 @@ R0.00
 
 </div>
 
+<div class="mt-3">
+
+<button id="order-details-toggle" class="btn btn-outline-dark btn-sm" type="button">
+
+<span id="order-details-toggle-text">Show Order Details</span>
+
+</button>
+
+<div id="orderDetailsCollapse" class="collapse mt-3">
+
+<div id="order-details" class="border rounded p-3 bg-light">
+
+</div>
+
+</div>
+
+</div>
+
 <div class="d-grid gap-2 mt-3">
 
 <button
@@ -136,6 +154,55 @@ Proceed to Checkout
 
 const cartContainer = document.getElementById("cart-items");
 
+function toggleOrderDetails() {
+    const panel = document.getElementById("orderDetailsCollapse");
+    const toggleText = document.getElementById("order-details-toggle-text");
+
+    if (!panel) return;
+
+    const isOpen = panel.classList.contains("show");
+    const nextOpen = !isOpen;
+
+    panel.classList.toggle("show", nextOpen);
+    panel.style.display = nextOpen ? "block" : "none";
+
+    if (toggleText) {
+        toggleText.textContent = nextOpen ? "Hide Order Details" : "Show Order Details";
+    }
+
+    try {
+        localStorage.setItem("orderDetailsOpen", nextOpen ? "1" : "0");
+    } catch (error) {}
+}
+
+function restoreOrderDetailsState() {
+    const panel = document.getElementById("orderDetailsCollapse");
+    const toggleText = document.getElementById("order-details-toggle-text");
+
+    if (!panel) return;
+
+    let isOpen = false;
+
+    try {
+        isOpen = localStorage.getItem("orderDetailsOpen") === "1";
+    } catch (error) {}
+
+    panel.classList.toggle("show", isOpen);
+    panel.style.display = isOpen ? "block" : "none";
+
+    if (toggleText) {
+        toggleText.textContent = isOpen ? "Hide Order Details" : "Show Order Details";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleButton = document.getElementById("order-details-toggle");
+    if (toggleButton) {
+        toggleButton.addEventListener("click", toggleOrderDetails);
+    }
+    restoreOrderDetailsState();
+});
+
 // =============================
 // Render Cart
 // =============================
@@ -144,7 +211,11 @@ function renderCart(){
 
 cartContainer.innerHTML = "";
 
-cart = JSON.parse(localStorage.getItem("cart")) || [];
+loadCart();
+
+if (typeof window.updateCartCount === "function") {
+    window.updateCartCount();
+}
 
 if(cart.length===0){
 
@@ -261,6 +332,59 @@ onclick="removeItem(${item.id})">
 document.getElementById("cart-total").textContent =
 
 "R"+total.toFixed(2);
+
+restoreOrderDetailsState();
+
+const detailsContainer = document.getElementById("order-details");
+
+if(detailsContainer){
+
+if(cart.length===0){
+
+detailsContainer.innerHTML = "<p class=\"mb-0\">No items selected yet.</p>";
+} else {
+
+const currentUser = JSON.parse(localStorage.getItem("loggedInUser")) || null;
+const customerName = currentUser
+    ? `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim()
+    : "Guest Customer";
+const customerEmail = currentUser?.email || "Not provided";
+const customerPhone = currentUser?.phone || "Not provided";
+const orderStatus = currentUser ? "Pending" : "Awaiting checkout";
+
+let detailsHtml = `
+<div class="mb-3">
+    <h6 class="fw-bold mb-2">Customer Information</h6>
+    <p class="mb-1"><strong>Name:</strong> ${customerName}</p>
+    <p class="mb-1"><strong>Email:</strong> ${customerEmail}</p>
+    <p class="mb-0"><strong>Phone:</strong> ${customerPhone}</p>
+</div>
+<hr class="my-2">
+<div class="mb-3">
+    <h6 class="fw-bold mb-2">Ordered Products</h6>
+`;
+
+cart.forEach(item => {
+
+const subtotal = item.price * item.quantity;
+
+detailsHtml += `<div class="d-flex justify-content-between mb-2"><span>${item.quantity} × ${item.name}</span><strong>R${subtotal.toFixed(2)}</strong></div>`;
+
+});
+
+detailsHtml += `
+</div>
+<hr class="my-2">
+<div class="mb-2">
+    <strong>Order Status:</strong> <span class="badge bg-warning text-dark">${orderStatus}</span>
+</div>
+<div class="d-flex justify-content-between"><strong>Total</strong><strong>R${total.toFixed(2)}</strong></div>`;
+
+detailsContainer.innerHTML = detailsHtml;
+
+}
+
+}
 
 }
 

@@ -351,7 +351,17 @@ orders.push(order);
 
 localStorage.setItem("orders",JSON.stringify(orders));
 
-localStorage.removeItem("cart");
+if (typeof window.resetCart === "function") {
+    window.resetCart();
+} else {
+    try {
+        localStorage.removeItem("cart");
+    } catch (error) {}
+
+    try {
+        sessionStorage.removeItem("cart");
+    } catch (error) {}
+}
 
 alert("🎉 Thank you! Your order has been placed successfully.");
 

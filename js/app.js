@@ -2,14 +2,54 @@
 // FLEXSTORE APP
 // =====================================
 
-// Load cart from Local Storage
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// Load cart from browser storage
+let cart = [];
+
+function getStoredCartValue() {
+    try {
+        const localValue = localStorage.getItem("cart");
+        if (localValue !== null) {
+            return localValue;
+        }
+    } catch (error) {}
+
+    try {
+        return sessionStorage.getItem("cart");
+    } catch (error) {
+        return null;
+    }
+}
+
+function writeStoredCartValue(value) {
+    try {
+        localStorage.setItem("cart", value);
+    } catch (error) {}
+
+    try {
+        sessionStorage.setItem("cart", value);
+    } catch (error) {}
+}
+
+function loadCart() {
+    try {
+        const savedCart = getStoredCartValue();
+        cart = savedCart ? JSON.parse(savedCart) : [];
+        if (!Array.isArray(cart)) cart = [];
+    } catch (error) {
+        cart = [];
+    }
+    return cart;
+}
+
+loadCart();
 
 // =====================================
 // Update Cart Counter
 // =====================================
 
 function updateCartCount() {
+
+    loadCart();
 
     const cartCount = document.getElementById("cart-count");
 
@@ -38,6 +78,8 @@ function addToCart(productId, quantity = 1) {
 
     if (quantity < 1) quantity = 1;
 
+    loadCart();
+
     const normalizedId = Number(productId);
 
     const product = products.find(product => Number(product.id) === normalizedId);
@@ -50,7 +92,7 @@ function addToCart(productId, quantity = 1) {
 
     }
 
-    const existing = cart.find(item => item.id === productId);
+    const existing = cart.find(item => Number(item.id) === normalizedId);
 
     if (existing) {
 
@@ -100,9 +142,7 @@ function clearCart() {
 
     if(confirm("Are you sure you want to clear your cart?")){
 
-        cart = [];
-
-        localStorage.removeItem("cart");
+        resetCart();
 
         updateCartCount();
 
@@ -110,6 +150,18 @@ function clearCart() {
 
     }
 
+}
+
+function resetCart() {
+    cart = [];
+
+    try {
+        localStorage.removeItem("cart");
+    } catch (error) {}
+
+    try {
+        sessionStorage.removeItem("cart");
+    } catch (error) {}
 }
 
 // =====================================
@@ -136,7 +188,8 @@ function getCartTotal(){
 
 function saveCart(){
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+    writeStoredCartValue(JSON.stringify(cart));
+    loadCart();
 
 }
 

@@ -121,14 +121,18 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
 
     if(user){
 
+        const normalizedUser = window.FlexStoreAuth && window.FlexStoreAuth.normalizeUser
+            ? window.FlexStoreAuth.normalizeUser(user)
+            : { ...user, role: user.role || (user.email === "admin@flexstore.com" ? "admin" : "customer") };
+
         localStorage.setItem(
             "loggedInUser",
-            JSON.stringify(user)
+            JSON.stringify(normalizedUser)
         );
 
         alert("Login successful!");
 
-        if (user.role === "admin" || user.email === "admin@flexstore.com") {
+        if (normalizedUser.role === "admin" || normalizedUser.email === "admin@flexstore.com") {
             window.location = "admin/dashboard.html";
         } else {
             window.location = "index.html";
